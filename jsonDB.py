@@ -3,10 +3,9 @@ from pysondb import db
 from pysondb.db import JsonDatabase
 from datetime import datetime
 import os
-
+import json
 
 DEFAULT_DB_PATH = "./myjsondb/"
-
 
 class DoFactory:
     def to_dict(self):
@@ -16,7 +15,6 @@ class DoFactory:
         # プライベート属性やプロパティメソッドは含まれません。
         return {key: value for key, value in self.__dict__.items() if not key.startswith('_')}
 
-
     def to_query_dict(self):
         # インスタンスのプロパティを辞書に変換します。
         # __dict__を利用して、インスタンスの属性とその値を取得します。
@@ -24,6 +22,12 @@ class DoFactory:
         # プライベート属性やプロパティメソッドは含まれません。
         return {key: value for key, value in self.__dict__.items() if not key.startswith('_') and len(value)>0}
 
+    @classmethod
+    def from_json_dict(cls, json_dict):
+        instance = cls()
+        for key, value in json_dict.items():
+            setattr(instance, key, value)
+        return instance
 
 def _base_validate_and_upsert_to_jsondatabase(_MyDataModel: BaseModel, dataset_db: JsonDatabase, datainstance: DoFactory)-> bool:
     try:
@@ -100,11 +104,27 @@ def _base_delete_to_jsondatabase(dataset_db: JsonDatabase, queryinstance: DoFact
     return True
 
 
+def gettimestamp():
+    current_time = datetime.now()
+    timestamp_str = current_time.strftime('%Y%m%d%H%M%S%f')
+    return timestamp_str
+
+
+class ValidatedSchemaFactory(BaseModel):
+    registration_date: str = Field(default_factory=gettimestamp)
+
+    @classmethod
+    def from_json_dict(cls, json_dict):
+        #print(json_str)
+        #json_dict = json.loads(json_str)
+        return cls(**json_dict)
+
+
 class BaseJsonDbORM:
     _instances = {}
     dbpath: str = None
     dbname: str = None
-    schema: BaseModel = None
+    schema: ValidatedSchemaFactory = None
     jsondb: JsonDatabase = None
 
     def __new__(cls, *args, **kwargs):
@@ -122,24 +142,14 @@ class BaseJsonDbORM:
             dataset_path = f'{self.dbpath}/{self.dbname}.json'
         self.jsondb = db.getDb(dataset_path)
 
-    def upsert(self, datainstance: DoFactory):
+    def upsert(self, datainstance: DoFactory)-> bool:
         return _base_validate_and_upsert_to_jsondatabase(self.schema, self.jsondb, datainstance)
 
-    def upserts(self, dataList: list[DoFactory]):
+    def upserts(self, dataList: list[DoFactory])-> bool:
         return _base_validate_and_upserts_to_jsondatabase(self.schema, self.jsondb, dataList)
 
-    def update_all(self, queryinstance: DoFactory, datainstance: DoFactory):
+    def update_all(self, queryinstance: DoFactory, datainstance: DoFactory)-> bool:
         return _base_validate_and_update_all_to_jsondatabase(self.schema, self.jsondb, queryinstance, datainstance)
 
-    def delete(self, queryinstance: DoFactory):
+    def delete(self, queryinstance: DoFactory)-> bool:
         return _base_delete_to_jsondatabase(self.jsondb, queryinstance)
-
-
-def gettimestamp():
-    current_time = datetime.now()
-    timestamp_str = current_time.strftime('%Y%m%d%H%M%S%f')
-    return timestamp_str
-
-
-class ValidatedSchemaFactory(BaseModel):
-    registration_date: str = Field(default_factory=gettimestamp)

@@ -3,8 +3,8 @@ from jsonDB import ValidatedSchemaFactory, BaseJsonDbORM, DoFactory
 
 class _MyData_Prop:
     name: str
-    email: str = ""
-    data: dict = {}
+    email: str
+    data: dict
 
 class _MyData_Schema(_MyData_Prop, ValidatedSchemaFactory):
     pass
@@ -50,4 +50,10 @@ if __name__ == '__main__':
         ]
     }
     MyJson_ORM().upsert(data2)
-    print(MyJson_ORM().jsondb.getByQuery({"name":"bbbbbbbbbbbbbbbbbbb"})[0])
+
+    query = MyData_Do()
+    query.name = "bbbbbbbbbbbbbbbbbbb"
+    for a in MyJson_ORM().jsondb.getByQuery(query.to_query_dict()):
+        data = MyData_Do().from_json_dict(a)
+        print(data.name)
+        
