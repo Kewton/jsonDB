@@ -124,12 +124,15 @@ class BaseJsonDbORM:
     dbname: str = None
     schema: ValidatedSchemaFactory = None
     jsondb: JsonDatabase = None
+    issingleton: bool = False
 
     def __new__(cls, *args, **kwargs):        
-        if cls not in cls._instances:
-            instance = super().__new__(cls)
-            cls._instances[cls] = instance
-        return cls._instances[cls]
+        if cls.issingleton:
+            if cls not in cls._instances:
+                instance = super().__new__(cls)
+                cls._instances[cls] = instance
+            return cls._instances[cls]
+        return super().__new__(cls)
 
     def __init__(self):
         if self.dbpath is None:

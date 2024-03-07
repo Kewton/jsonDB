@@ -22,7 +22,8 @@ class MyData_Do(_MyData_Prop, DoFactory):
     pass
 
 class MyJson_ORM(BaseJsonDbORM):
-    schema = _MyData_Schema 
+    schema = _MyData_Schema
+    issingleton = True
 
     def __init__(self, _dbname):
         self.dbname = _dbname
@@ -47,6 +48,10 @@ if __name__ == '__main__':
         ]
     }
     myJson_ORM_1 = MyJson_ORM("db_test1")
+    myJson_ORM_2 = MyJson_ORM("db_test2")
+    myJson_ORM_3 = MyJson_ORM("db_test3")
+
+
     myJson_ORM_1.upsert(data)
 
     # myJson_ORM2 = MyJson_ORM()
@@ -63,10 +68,10 @@ if __name__ == '__main__':
             {"a":14}
         ]
     }
-    myJson_ORM_2 = MyJson_ORM("db_test2")
+    
     myJson_ORM_2.upsert(data2)
 
-    myJson_ORM_3 = MyJson_ORM("db_test3")
+    
     myJson_ORM_3.upsert(data2)
 
     query = MyData_Do()
