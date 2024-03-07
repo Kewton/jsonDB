@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='localjsondb',  # パッケージ名
-    version='0.1.1',  # バージョン
+    version='0.1.2',  # バージョン
     author='kewton',  # 著者名
     author_email='newtons.boiled.clock@gmail.com',  # 著者のメールアドレス
     description='A short description of the package',  # パッケージの短い説明

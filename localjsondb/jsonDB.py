@@ -137,10 +137,12 @@ class BaseJsonDbORM:
     def __init__(self):
         if self.dbpath is None:
             os.makedirs(DEFAULT_DB_PATH, exist_ok=True)
-            dataset_path = f'{DEFAULT_DB_PATH}/{self.dbname}.json'
+            dataset_path = os.path.join(DEFAULT_DB_PATH, f"{self.dbname}.json")
+            #f'{DEFAULT_DB_PATH}/{self.dbname}.json'
         else:
             os.makedirs(self.dbpath, exist_ok=True)
-            dataset_path = f'{self.dbpath}/{self.dbname}.json'
+            #dataset_path = f'{self.dbpath}/{self.dbname}.json'
+            dataset_path = os.path.join(self.dbpath, f"{self.dbname}.json")
         self.jsondb = db.getDb(dataset_path)
 
     def upsert(self, datainstance: DoFactory)-> bool:
