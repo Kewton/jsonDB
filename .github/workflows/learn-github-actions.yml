@@ -23,7 +23,8 @@ jobs:
       run: |
         pytest ./tests/test_my_module.py
     - name: Build MkDocs site
-      run: mkdocs build
+      run: |
+        mkdocs build
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
