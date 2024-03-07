@@ -115,8 +115,6 @@ class ValidatedSchemaFactory(BaseModel):
 
     @classmethod
     def from_json_dict(cls, json_dict):
-        #print(json_str)
-        #json_dict = json.loads(json_str)
         return cls(**json_dict)
 
 
@@ -127,7 +125,7 @@ class BaseJsonDbORM:
     schema: ValidatedSchemaFactory = None
     jsondb: JsonDatabase = None
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, *args, **kwargs):        
         if cls not in cls._instances:
             instance = super().__new__(cls)
             cls._instances[cls] = instance
