@@ -1,6 +1,0 @@
-__pycache__/
-.venv/
-/myjsondb/*.json
-/tests/mydb/
-/site/
-/.pytest_cache/
