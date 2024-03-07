@@ -1,4 +1,2 @@
 pysondb
 pydantic
-pytest
-mkdocs

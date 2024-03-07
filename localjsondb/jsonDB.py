@@ -3,7 +3,6 @@ from pysondb import db
 from pysondb.db import JsonDatabase
 from datetime import datetime
 import os
-import json
 
 DEFAULT_DB_PATH = "./myjsondb/"
 
@@ -104,14 +103,14 @@ def _base_delete_to_jsondatabase(dataset_db: JsonDatabase, queryinstance: DoFact
     return True
 
 
-def gettimestamp():
+def _gettimestamp():
     current_time = datetime.now()
     timestamp_str = current_time.strftime('%Y%m%d%H%M%S%f')
     return timestamp_str
 
 
 class ValidatedSchemaFactory(BaseModel):
-    registration_date: str = Field(default_factory=gettimestamp)
+    registration_date: str = Field(default_factory=_gettimestamp)
 
     @classmethod
     def from_json_dict(cls, json_dict):

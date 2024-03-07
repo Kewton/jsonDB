@@ -11,8 +11,8 @@ setup(
     url='https://github.com/Kewton/jsonDB',  # プロジェクトのURL
     packages=find_packages(exclude=('tutorial',"docs", "tests")),  # パッケージのインクルード（テストやドキュメントを除外）
     install_requires=[  # 依存関係のリスト
-        'pysondb',  # 例: NumPy 1.18.1以上
-        'pydantic',  # 例: Requests 2.22.0以上
+        'pysondb',
+        'pydantic',
     ],
     classifiers=[  # パッケージの分類情報
         'Programming Language :: Python :: 3',
