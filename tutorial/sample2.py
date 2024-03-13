@@ -76,7 +76,16 @@ if __name__ == '__main__':
 
     query = MyData_Do()
     query.name = "bbbbbbbbbbbbbbbbbbb"
+    
     for a in myJson_ORM_2.jsondb.getByQuery(query.to_query_dict()):
         data = MyData_Do().from_json_dict(a)
         print(data.name)
-        
+
+    print("=======")
+    print(myJson_ORM_2.jsondb.getAll())
+    for a in myJson_ORM_2.jsondb.getAll():
+        print("-----")
+        data = MyData_Do().from_json_dict(a)
+        print(data.to_dict())
+
+    

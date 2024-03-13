@@ -8,21 +8,28 @@ DEFAULT_DB_PATH = "./myjsondb/"
 
 class DoFactory:
     def to_dict(self):
-        # インスタンスのプロパティを辞書に変換します。
-        # __dict__を利用して、インスタンスの属性とその値を取得します。
-        # この方法は、インスタンスの直接的な公開プロパティのみを扱います。
-        # プライベート属性やプロパティメソッドは含まれません。
+        """
+        * インスタンスのプロパティを辞書に変換します。
+        * __dict__を利用して、インスタンスの属性とその値を取得します。
+        * この方法は、インスタンスの直接的な公開プロパティのみを扱います。
+        * プライベート属性やプロパティメソッドは含まれません。
+        """
         return {key: value for key, value in self.__dict__.items() if not key.startswith('_')}
 
     def to_query_dict(self):
-        # インスタンスのプロパティを辞書に変換します。
-        # __dict__を利用して、インスタンスの属性とその値を取得します。
-        # この方法は、インスタンスの直接的な公開プロパティのみを扱います。
-        # プライベート属性やプロパティメソッドは含まれません。
+        """
+        * インスタンスのプロパティを辞書に変換します。
+        * __dict__を利用して、インスタンスの属性とその値を取得します。
+        * この方法は、インスタンスの直接的な公開プロパティのみを扱います。
+        * プライベート属性やプロパティメソッドは含まれません。
+        """
         return {key: value for key, value in self.__dict__.items() if not key.startswith('_') and len(value)>0}
 
     @classmethod
     def from_json_dict(cls, json_dict):
+        """
+        * 辞書からインスタンスを作成します
+        """
         instance = cls()
         for key, value in json_dict.items():
             setattr(instance, key, value)
@@ -37,13 +44,12 @@ def _base_validate_and_upsert_to_jsondatabase(_MyDataModel: BaseModel, dataset_d
             _query[_key] = data[_key]
         _data = dataset_db.getByQuery(query=_query)
         if len(_data) == 0:
-            # データベースにデータを挿入
             dataset_db.add(validated_data.model_dump(mode="json"))
         else:
             _id = _data[0]["id"]
             dataset_db.updateById(_id, validated_data.model_dump(mode="json"))
     except ValidationError as e:
-        print("バリデーションエラー:", e.json())
+        print("A validation error has occurred.errormessage=", e.json())
         return False
     return True
 
@@ -67,7 +73,7 @@ def _base_validate_and_upserts_to_jsondatabase(_MyDataModel: BaseModel, dataset_
                 _id = _data[0]["id"]
                 dataset_db.updateById(_id, data)
     except ValidationError as e:
-        print("バリデーションエラー:", e.json())
+        print("A validation error has occurred.errormessage=", e.json())
         return False
     return True
 
@@ -82,10 +88,9 @@ def _base_validate_and_update_all_to_jsondatabase(_MyDataModel: BaseModel, datas
             _id = _rec["id"]
             _data.update(data)
             validated_data = _MyDataModel(**_data)
-            # データベースにデータを挿入
             dataset_db.updateById(_id, validated_data.model_dump())
     except ValidationError as e:
-        print("バリデーションエラー:", e.json())
+        print("A validation error has occurred.errormessage=", e.json())
         return False
     return True
 
@@ -98,7 +103,7 @@ def _base_delete_to_jsondatabase(dataset_db: JsonDatabase, queryinstance: DoFact
             _id = _rec["id"]
             dataset_db.deleteById(_id)
     except ValidationError as e:
-        print("バリデーションエラー:", e.json())
+        print("A validation error has occurred.errormessage=", e.json())
         return False
     return True
 
@@ -111,10 +116,6 @@ def _gettimestamp():
 
 class ValidatedSchemaFactory(BaseModel):
     registration_date: str = Field(default_factory=_gettimestamp)
-
-    @classmethod
-    def from_json_dict(cls, json_dict):
-        return cls(**json_dict)
 
 
 class BaseJsonDbORM:
@@ -137,10 +138,8 @@ class BaseJsonDbORM:
         if self.dbpath is None:
             os.makedirs(DEFAULT_DB_PATH, exist_ok=True)
             dataset_path = os.path.join(DEFAULT_DB_PATH, f"{self.dbname}.json")
-            #f'{DEFAULT_DB_PATH}/{self.dbname}.json'
         else:
             os.makedirs(self.dbpath, exist_ok=True)
-            #dataset_path = f'{self.dbpath}/{self.dbname}.json'
             dataset_path = os.path.join(self.dbpath, f"{self.dbname}.json")
         self.jsondb = db.getDb(dataset_path)
 
