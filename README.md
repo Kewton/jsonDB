@@ -115,6 +115,17 @@ I don't test environments under Linux and Mac.
     pip install mkdocs
     ```
 
+1. mac
+    ```bash
+    python3 -m venv .venv
+    source .venv/bin/activate
+    python3 -m pip install --upgrade pip
+    # deactivate
+    pip install -r requirements.txt
+    pip install pytest
+    pip install mkdocs
+    ```
+
 ## How to run the tutorial?
 * Run "sample2.py"
     ```bash
