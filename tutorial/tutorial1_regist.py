@@ -15,11 +15,14 @@ class _MyData_Prop:
     email: str
     data: dict
 
+
 class _MyData_Schema(_MyData_Prop, ValidatedSchemaFactory):
     pass
 
+
 class MyData_Do(_MyData_Prop, DoFactory):
     pass
+
 
 class MyJson_ORM(BaseJsonDbORM):
     schema = _MyData_Schema
@@ -30,11 +33,14 @@ if __name__ == '__main__':
     data = MyData_Do()
     data.email = "test@ma"
     data.data = {
-        "test":"aaaaaaaaaaaaaaaaaaaaaaa",
-        "hogehoge":"uoooooooooooooooooo",
-        "aaa": [{"a":1},{"a":2}]
+        "test": "aaaaaaaaaaaaaaaaaaaaaaa",
+        "hogehoge": "uoooooooooooooooooo",
+        "aaa": [
+            {"a": 1},
+            {"a": 2}
+        ]
     }
 
     for _name in ["name_1", "name_2", "name_3"]:
         data.name = _name
-        MyJson_ORM().upsert(data)
+        MyJson_ORM().upsertByprimaryKey(data)

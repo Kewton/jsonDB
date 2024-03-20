@@ -6,6 +6,7 @@ import os
 
 DEFAULT_DB_PATH = "./myjsondb/"
 
+
 class DoFactory:
     def to_dict(self):
         """
@@ -23,7 +24,7 @@ class DoFactory:
         * この方法は、インスタンスの直接的な公開プロパティのみを扱います。
         * プライベート属性やプロパティメソッドは含まれません。
         """
-        return {key: value for key, value in self.__dict__.items() if not key.startswith('_') and len(value)>0}
+        return {key: value for key, value in self.__dict__.items() if not key.startswith('_') and len(value) > 0}
 
     @classmethod
     def from_json_dict(cls, json_dict):
@@ -35,7 +36,8 @@ class DoFactory:
             setattr(instance, key, value)
         return instance
 
-def _base_validate_and_upsert_to_jsondatabase(_MyDataModel: BaseModel, dataset_db: JsonDatabase, datainstance: DoFactory)-> bool:
+
+def _base_validate_and_upsertbyprimarykey_to_jsondatabase(_MyDataModel: BaseModel, dataset_db: JsonDatabase, datainstance: DoFactory) -> bool:
     try:
         data = datainstance.to_dict()
         validated_data = _MyDataModel(**data)
@@ -54,13 +56,13 @@ def _base_validate_and_upsert_to_jsondatabase(_MyDataModel: BaseModel, dataset_d
     return True
 
 
-def _base_validate_and_upserts_to_jsondatabase(_MyDataModel: BaseModel, dataset_db: JsonDatabase, dataList: list[DoFactory])-> bool:
+def _base_validate_and_upsertsbyprimarykey_to_jsondatabase(_MyDataModel: BaseModel, dataset_db: JsonDatabase, dataList: list[DoFactory]) -> bool:
     try:
         _dataList = []
         for data in dataList:
             validated_data = _MyDataModel(**data.to_dict())
             _dataList.append(validated_data.model_dump(mode="json"))
-        
+
         for data in _dataList:
             _query = {}
             for _key in _MyDataModel.model_json_schema()["required"]:
@@ -126,7 +128,7 @@ class BaseJsonDbORM:
     jsondb: JsonDatabase = None
     issingleton: bool = False
 
-    def __new__(cls, *args, **kwargs):        
+    def __new__(cls, *args, **kwargs):
         if cls.issingleton:
             if cls not in cls._instances:
                 instance = super().__new__(cls)
@@ -143,14 +145,14 @@ class BaseJsonDbORM:
             dataset_path = os.path.join(self.dbpath, f"{self.dbname}.json")
         self.jsondb = db.getDb(dataset_path)
 
-    def upsert(self, datainstance: DoFactory)-> bool:
-        return _base_validate_and_upsert_to_jsondatabase(self.schema, self.jsondb, datainstance)
+    def upsertByprimaryKey(self, datainstance: DoFactory) -> bool:
+        return _base_validate_and_upsertbyprimarykey_to_jsondatabase(self.schema, self.jsondb, datainstance)
 
-    def upserts(self, dataList: list[DoFactory])-> bool:
-        return _base_validate_and_upserts_to_jsondatabase(self.schema, self.jsondb, dataList)
+    def upsertsByprimaryKey(self, datainstanceList: list[DoFactory]) -> bool:
+        return _base_validate_and_upsertsbyprimarykey_to_jsondatabase(self.schema, self.jsondb, datainstanceList)
 
-    def update_all(self, queryinstance: DoFactory, datainstance: DoFactory)-> bool:
+    def update_all(self, queryinstance: DoFactory, datainstance: DoFactory) -> bool:
         return _base_validate_and_update_all_to_jsondatabase(self.schema, self.jsondb, queryinstance, datainstance)
 
-    def delete(self, queryinstance: DoFactory)-> bool:
+    def delete(self, queryinstance: DoFactory) -> bool:
         return _base_delete_to_jsondatabase(self.jsondb, queryinstance)

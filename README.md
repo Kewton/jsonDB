@@ -69,7 +69,7 @@ pip install git+https://github.com/Kewton/jsonDB
             ]
         }
 
-        MyStremalit.upsert(myStreamlitDo)
+        MyStremalit.upsertByprimaryKey(myStreamlitDo)
     ```
 1. Run "datamanipulate.py"
     ```bash
@@ -98,12 +98,13 @@ pip install git+https://github.com/Kewton/jsonDB
 
 # Note
 
-I don't test environments under Linux and Mac.
+Tested only on windows and mac. Other OSs have not been tested.
 
 
 # Development
 ## How to build a development environment?
 * Install the required libraries.
+    - For winddows
     ```bash
     git clone https://github.com/Kewton/jsonDB
     cd jsonDB
@@ -115,7 +116,7 @@ I don't test environments under Linux and Mac.
     pip install mkdocs
     ```
 
-1. mac
+    - For mac
     ```bash
     python3 -m venv .venv
     source .venv/bin/activate
@@ -127,9 +128,22 @@ I don't test environments under Linux and Mac.
     ```
 
 ## How to run the tutorial?
-* Run "sample2.py"
+We provide tutorials for registering, reading, updating, and deleting.
+* If you want to run the "Registering" tutorial, Run "tutorial1_regist.py"
     ```bash
-    python .\tutorial\sample2.py 
+    python .\tutorial\tutorial1_regist.py 
+    ```
+* If you want to run the "Reading" tutorial, Run "tutorial2_read.py"
+    ```bash
+    python .\tutorial\tutorial2_read.py 
+    ```
+* If you want to run the "Updating" tutorial, Run "tutorial3_update.py"
+    ```bash
+    python .\tutorial\tutorial3_update.py 
+    ```
+* If you want to run the "Deleting" tutorial, Run "tutorial4_delete.py"
+    ```bash
+    python .\tutorial\tutorial4_delete.py 
     ```
 
 ## How to run unit tests?

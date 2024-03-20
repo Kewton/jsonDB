@@ -1,6 +1,7 @@
 __pycache__/
 .venv/
 /myjsondb/*.json
+/myjsondb/*.lock
 /tests/mydb/
 /site/
 /.pytest_cache/
